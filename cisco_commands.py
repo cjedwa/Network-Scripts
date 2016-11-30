@@ -24,6 +24,7 @@ def main():
 
     parser.add_argument('-u', default=getpass.getuser(), help='User name for session.')
     parser.add_argument('-i', action="store_true", help='Pause for input between multiple SSH sessions.')
+    parser.add_argument('-V', default=False, help='Toggle verbosity')
 
     args = parser.parse_args() 
 
@@ -46,7 +47,7 @@ def main():
                         'username': str(uname),
                         'password': str(password),
                         'port' : 22,        
-                        'verbose': True,
+                        'verbose': args.V,
                         'use_keys': True,
                         'key_file': args.k
                         }
@@ -61,7 +62,7 @@ def main():
                         'username': str(uname),
                         'password': str(password),
                         'port' : 22,        
-                        'verbose': True,
+                        'verbose': args.V,
                         'use_keys': False,
                         }
                     )
@@ -75,7 +76,7 @@ def main():
                 'username': str(uname),
                 'password': str(password),
                 'port' : 22,        
-                'verbose': True,
+                'verbose': args.V,
                 'use_keys': True,
                 'key_file': args.k
                 }
@@ -90,7 +91,7 @@ def main():
                 'username': str(uname),
                 'password': str(password),
                 'port' : 22,        
-                'verbose': True,
+                'verbose': args.V,
                 'use_keys': False,
                 }
             )

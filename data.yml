@@ -1,0 +1,18 @@
+---
+ip: 10.0.0.1
+device_type: cisco_s300
+password: 
+port: 22
+username: cody
+verbose: True
+use_keys: True
+key_file: /home/cody/.ssh/id_rsa.pub
+---
+ip: 10.0.0.1
+device_type: cisco_s300
+password: 
+port: 22
+username: cody
+verbose: True
+use_keys: True
+key_file: /home/cody/.ssh/id_rsa.pub

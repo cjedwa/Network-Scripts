@@ -15,4 +15,5 @@ optional arguments:
   -u          User name for session.
   -i          Pause for input between each SSH session.
   -V          Toggle verbosity. Default is False. Example, -V True will turn on verbosity.
+  -m          Get end device info and dump to yaml.
 

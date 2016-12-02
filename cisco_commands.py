@@ -124,34 +124,37 @@ def main():
                 output = net_connect.send_config_set(command_list)
 
         elif args.t:
-            net_connect.find_prompt() 
-    if args.m:
-        output = net_connect.send_command("show mac address-table")
-        output = re.sub(' +', ',', output).rstrip()
-        lines = output.splitlines()
-        mac_list = []
-        for line in lines:
-            line = line[1:-1]
-            match_mac = re.search(r'((?:[0-9a-f]{2}:){5}[0-9a-f]{2})', line, re.IGNORECASE)
-            if match_mac:
-                lineorder = [1,0,2,3]
-                line = line.encode("utf-8", "ignore").split(',')
-                line = [ line[q] for q in lineorder]
-                line.append(i.get('ip'))
-                #print(line)
-                device_data = {
-                    'switch_ip': line[4],
-                    'mac_addr': line[0],
-                    'port_num': str(line[2]),
-                    'vlan_tag': int(line[1]),
-                    'method': str(line[3])
-                    }
-                mac = EUI(device_data['mac_addr'])
-                device_data['oui_lookup'] = str(mac.oui.registration().org)
-                device_data['zaddr'] = mac.oui.registration().address
-                mac_list.append(device_data)
-    
-        output = yaml.dump(mac_list, default_flow_style=False, explicit_start=True)
-    print(output)
+            output = net_connect.find_prompt() 
+        elif args.m:
+            output = net_connect.send_command("show mac address-table")
+            #print(hostname)
+            output = re.sub(' +', ',', output).rstrip()
+            lines = output.splitlines()
+            mac_list = []
+            for line in lines:
+                line = line[1:-1]
+                match_mac = re.search(r'((?:[0-9a-f]{2}:){5}[0-9a-f]{2})', line, re.IGNORECASE)
+                if match_mac:
+                    lineorder = [1,0,2,3]
+                    line = line.encode("utf-8", "ignore").split(',')
+                    line = [ line[q] for q in lineorder]
+                    line.append(i.get('ip'))
+                    #print(line)
+                    device_data = {
+                        'switch_ip': line[4],
+                        'mac_addr': line[0],
+                        'port_num': str(line[2]),
+                        'vlan_tag': int(line[1]),
+                        'method': str(line[3])
+                        }
+                    mac = EUI(device_data['mac_addr'])
+                    device_data['oui_lookup'] = str(mac.oui.registration().org)
+                    device_data['zaddr'] = mac.oui.registration().address
+                    mac_list.append(device_data)
+             
+            output = yaml.dump(mac_list, default_flow_style=False, explicit_start=True)
+
+        print(output)
+
 if __name__ == "__main__":
    main()

@@ -1,1 +1,1 @@
-do show ver
+do show mac address-table

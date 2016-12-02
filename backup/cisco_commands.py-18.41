@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 from __future__ import print_function
-import sys, argparse, datetime, getpass, yaml, re
+import sys, argparse, datetime, getpass, yaml
 from netmiko import ConnectHandler
 from netmiko.cisco import CiscoS300SSH
-from netaddr import *
 
 def main():
 
@@ -25,7 +24,6 @@ def main():
 
     parser.add_argument('-u', default=getpass.getuser(), help='User name for session.')
     parser.add_argument('-i', action="store_true", help='Pause for input between multiple SSH sessions.')
-    parser.add_argument('-m', action="store_true", help='Get end device info and dump to yaml.')
     parser.add_argument('-V', default=False, help='Toggle verbosity')
 
     args = parser.parse_args() 
@@ -113,6 +111,7 @@ def main():
         if args.c:
             command = args.c
             output = net_connect.send_command(command)
+     #       print(output)
 
         elif args.f:
             input_file = args.f
@@ -122,36 +121,13 @@ def main():
                 command_list = map(lambda temp: temp.strip(), temp)
                 print(command_list)
                 output = net_connect.send_config_set(command_list)
+    #            print(output)
 
         elif args.t:
             net_connect.find_prompt() 
-    if args.m:
-        output = net_connect.send_command("show mac address-table")
-        output = re.sub(' +', ',', output).rstrip()
-        lines = output.splitlines()
-        mac_list = []
-        for line in lines:
-            line = line[1:-1]
-            match_mac = re.search(r'((?:[0-9a-f]{2}:){5}[0-9a-f]{2})', line, re.IGNORECASE)
-            if match_mac:
-                lineorder = [1,0,2,3]
-                line = line.encode("utf-8", "ignore").split(',')
-                line = [ line[q] for q in lineorder]
-                line.append(i.get('ip'))
-                #print(line)
-                device_data = {
-                    'switch_ip': line[4],
-                    'mac_addr': line[0],
-                    'port_num': str(line[2]),
-                    'vlan_tag': int(line[1]),
-                    'method': str(line[3])
-                    }
-                mac = EUI(device_data['mac_addr'])
-                device_data['oui_lookup'] = str(mac.oui.registration().org)
-                device_data['zaddr'] = mac.oui.registration().address
-                mac_list.append(device_data)
-    
-        output = yaml.dump(mac_list, default_flow_style=False, explicit_start=True)
+        end_time = datetime.datetime.now().time()
+    #    delta = start_time - end_time
+    #    print(delta.total_seconds())
     print(output)
 if __name__ == "__main__":
    main()

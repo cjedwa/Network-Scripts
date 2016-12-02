@@ -1,5 +1,7 @@
 Tool to manage Cisco small business switches. Uses netmiko library.  
 
+Pretty broken, mostly a work in progress. Useful for running the same commands on a bunch of Cisco small business switches at once or pulling down info. Eventually I would like to use info pulled from MAC address tables to build a web interface with drop down menus to change vlans. 
+
 
 optional arguments:
   -h, --help  show this help message and exit

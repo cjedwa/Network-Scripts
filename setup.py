@@ -5,9 +5,9 @@ from setuptools import setup
 
 setup( name='cisco-commands',
         version='0.1',
-        description='some cisco switch stuff',
+        description='Setup cisco-commands',
         author='cody edwards',
-        author_email='cjedwa@internet.com',
+        author_email='cody@ydoc.tech',
         install_requires=['netaddr','netmiko'],
         )
 

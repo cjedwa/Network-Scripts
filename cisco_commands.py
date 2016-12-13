@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import sys, argparse, datetime, getpass, yaml, re
+from cryptography import *
 from netmiko import ConnectHandler
 from netmiko.cisco import CiscoS300SSH
 from netaddr import *

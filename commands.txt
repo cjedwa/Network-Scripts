@@ -1,1 +1,1 @@
-do show mac address-table
+username root privil 15 password rootROOT123

@@ -35,7 +35,7 @@ radius_config_regex_pattern = re.compile(r"(^radius-server +|encrypted radius-se
 snmp_config_regex_pattern = re.compile(r"^snmp-server +")
 sntp_config_regex_pattern = re.compile(r"(^sntp +|^encrypted sntp +)")
 ssh_client_config_regex_pattern = re.compile(r"^ip ssh-client +")
-ssh_config_regex_pattern = re.compile(r"^ip ssh +")
+ssh_config_regex_pattern = re.compile(r"(^ip ssh +|^encrypted ip ssh-client +)")
 system_mode_regex_pattern =re.compile(r"^set system mode ")
 tacacs_config_regex_pattern = re.compile(r"^tacacs-server +")
 telnet_config_regex_pattern = re.compile(r"^ip telnet server +")
@@ -109,12 +109,12 @@ d["remote_access"]["web_server"] = []
 d["time"] = {}
 d["time"]["clock"] = []
 d["time"]["sntp"] = []
-#d["user-keys"] = {}
 d["users"] = {}
 d["users"]["chain"] = []
 d["vlans"] = {}
 d["vlans"]["standard"] = []
 d["vlans"]["voice"] = []
+d["sshkeys"] = {}
 
 ## counter for interface number
 interface_count = 0
@@ -132,11 +132,10 @@ with open(args.xfile, 'r') as myfile:
     for key in rsakeys:
         key = "user-key" + key
         key = key.split("\n")
-        print(key)
         user = key[0].split()
-        d["users"][user[1]] = {}
-        d["users"][user[1]]["key"] = [] 
-        d["users"][user[1]]["key"].append(key)
+        uname = user[1]
+        d["sshkeys"][uname] = []
+        d["sshkeys"][uname].append(key)
     data = re.sub(keys_regex_pattern, r'', data) 
 
     ## find all of the insterface configs and add to dictionary
@@ -159,30 +158,34 @@ with open(args.xfile, 'r') as myfile:
     data = re.sub(banner_config_regex_pattern, r'', data) 
 
     ## find line ssh in configs and add to dictionary
-    line_ssh = re.findall(ssh_line_config_regex_pattern, data)
-    line_ssh = "line ssh" + line_ssh[0]
-    line_ssh = line_ssh.split("\n")
-    line_top = line_ssh[0].split()
-    d["line"][line_top[1]] = []
-    d["line"][line_top[1]] = line_ssh
-    data = re.sub(ssh_line_config_regex_pattern, r'', data) 
+    if re.findall(ssh_line_config_regex_pattern, data):
+        line_ssh = re.findall(ssh_line_config_regex_pattern, data)
+        line_ssh = "line ssh" + line_ssh[0]
+        line_ssh = line_ssh.split("\n")
+        line_top = line_ssh[0].split()
+        d["line"][line_top[1]] = []
+        d["line"][line_top[1]] = line_ssh
+        data = re.sub(ssh_line_config_regex_pattern, r'', data) 
 
     ## find line console in configs and add to dictionary
-    line_console = re.findall(console_line_config_regex_pattern, data)
-    line_console = "line console" + line_console[0]
-    line_console = line_console.split("\n")
-    line_top = line_console[0].split()
-    d["line"][line_top[1]] = []
-    d["line"][line_top[1]] = line_console
-    data = re.sub(console_line_config_regex_pattern, r'', data) 
+    elif re.findall(console_line_config_regex_pattern, data):
+        line_console = re.findall(console_line_config_regex_pattern, data)
+        line_console = re.findall(console_line_config_regex_pattern, data)
+        line_console = "line console" + line_console[0]
+        line_console = line_console.split("\n")
+        line_top = line_console[0].split()
+        d["line"][line_top[1]] = []
+        d["line"][line_top[1]] = line_console
+        data = re.sub(console_line_config_regex_pattern, r'', data) 
 
     ## Track down VLANs
-    vlans = re.findall(vlan_config_regex_pattern, data)
-    vlans = "vlan database" + vlans[0]
-    vlans = vlans.split('\n')
-    vlans = re.sub(r"vlan", r'', vlans[1]).split(',')
-    d["vlans"]["standard"] = vlans
-    data = re.sub(ssh_line_config_regex_pattern, r'', data) 
+    elif re.findall(vlan_config_regex_pattern, data):
+        vlans = re.findall(vlan_config_regex_pattern, data)
+        vlans = "vlan database" + vlans[0]
+        vlans = vlans.split('\n')
+        vlans = re.sub(r"vlan", r'', vlans[1]).split(',')
+        d["vlans"]["standard"] = vlans
+        data = re.sub(ssh_line_config_regex_pattern, r'', data) 
 
     for line in data.split('\n'):
         ## find the system mode

@@ -6,7 +6,7 @@
 #### tested with python 3.5
 #### Author: Cody Edwards
 #### Email: cjedwa@sandia.gov 
-#### Notes: need to add rest of config parameters and push into DB. possibly integrate with sgtool script. probably clean up regex too.
+#### Notes: need to add rest of config parameters and push into DB. possibly integrate with sgtool script. probably clean up regex too. Also finish adding the NOT DONE items below.
 ####
 
 import re, sys, json, argparse
@@ -41,12 +41,14 @@ tacacs_config_regex_pattern = re.compile(r"^tacacs-server +")
 telnet_config_regex_pattern = re.compile(r"^ip telnet server +")
 username_regex_pattern = re.compile(r"^username +")
 web_server_config_regex_pattern = re.compile(r"(^ip http +| ip https +)")
+ssd_config_regex_pattern = re.compile(r"(^ssd +|^no ssd +|^ssd-control-*|file SSD +)")
+voice_vlan_config_regex_pattern = re.compile(r"^voice vlan +")
+eee_config_regex_pattern = re.compile(r"^eee +")
+green_ethernet_config_regex_pattern = re.compile(r"^green-ethernet +")
 ##START NOT DONE
 arp_config_regex_pattern = re.compile(r"(^ip arp +|^arp +)")
 bridge_config_regex_pattern = re.compile(r"^bridge +")
-eee_config_regex_pattern = re.compile(r"^eee +")
 enable_config_regex_pattern = re.compile(r"^enable +")
-green_ethernet_config_regex_pattern = re.compile(r"^green-ethernet +")
 gvrp_config_regex_pattern = re.compile(r"^gvrp +")
 igmp_config_regex_pattern = re.compile(r"^ip igmp +")
 ipv6_config_regex_pattern = re.compile(r"^ipv6 +")
@@ -60,11 +62,9 @@ security_suite_config_regex_pattern = re.compile(r"^security-suite +")
 service_config_regex_pattern = re.compile(r"^service +")
 source_guard_config_regex_pattern = re.compile(r"^ip source-guard +")
 spanning_tree_config_regex_pattern = re.compile(r"^spanning-tree +")
-ssd_config_regex_pattern = re.compile(r"(^ssd +|^no ssd +|^ssd-control-*|file SSD +)")
 system_router_config_regex_pattern = re.compile(r"^system router +")
 tunnel_config_regex_pattern = re.compile(r"(^tunnel +|^Tunnel +)")
 udld_config_regex_pattern = re.compile(r"^udld +")
-voice_vlan_config_regex_pattern = re.compile(r"^voice vlan +")
 #END
 ## multiline regex 
 banner_config_regex_pattern = re.compile(r"(?s)^banner(.*?)(?:(?:\r*\n){2}|^\^C)", re.MULTILINE)
@@ -76,8 +76,8 @@ vlan_config_regex_pattern = re.compile(r"(?s)^vlan database(.*?)(?:(?:\r*\n){2}|
 
 ## create dict struture because I don't know how to do it dynamically
 d = {}
-d["aaa"] = []
 d["auth"] = {}
+d["auth"]["aaa"] = []
 d["auth"]["radius"] = []
 d["auth"]["tacacs"] = []
 d["banner"] = {}
@@ -91,9 +91,12 @@ d["dns"] = []
 d["dot1x"] = []
 d["hardware"] = {}
 d["hardware"]["disk"] = []
+d["hardware"]["power"] = []
 d["interfaces"] = {}
 d["line"] = {}
-d["logging"] = []
+d["management"] = {}
+d["management"]["logging"] = []
+d["management"]["snmp"] = []
 d["network"] = []
 d["no_match"] = []
 d["passwords"] = []
@@ -103,12 +106,12 @@ d["remote_access"]["ssh"]["ssh_client"] = []
 d["remote_access"]["ssh"]["ssh_server"] = []
 d["remote_access"]["telnet"] = []
 d["remote_access"]["web_server"] = []
-d["snmp"] = []
 d["time"] = {}
 d["time"]["clock"] = []
 d["time"]["sntp"] = []
-d["user-keys"] = {}
+#d["user-keys"] = {}
 d["users"] = {}
+d["users"]["chain"] = []
 d["vlans"] = {}
 d["vlans"]["standard"] = []
 d["vlans"]["voice"] = []
@@ -129,10 +132,11 @@ with open(args.xfile, 'r') as myfile:
     for key in rsakeys:
         key = "user-key" + key
         key = key.split("\n")
+        print(key)
         user = key[0].split()
-        d["user-keys"][user[1]] = {}
-        d["user-keys"][user[1]]["key"] = key
-        d["user-keys"][user[1]]["type"] = user[2]
+        d["users"][user[1]] = {}
+        d["users"][user[1]]["key"] = [] 
+        d["users"][user[1]]["key"].append(key)
     data = re.sub(keys_regex_pattern, r'', data) 
 
     ## find all of the insterface configs and add to dictionary
@@ -151,7 +155,7 @@ with open(args.xfile, 'r') as myfile:
         banner = "banner" + banner + "^C"
         banner = banner.split("\n")
         banner_top = banner[0].split()
-        d["banner"]["config"] = banner
+        d["banner"] = banner
     data = re.sub(banner_config_regex_pattern, r'', data) 
 
     ## find line ssh in configs and add to dictionary
@@ -188,8 +192,8 @@ with open(args.xfile, 'r') as myfile:
     
         ## find the system hostname
         elif re.search(hostname_regex_pattern, line):
-            hostname = re.split('\s+', line)
-            d["hostname"] = hostname[1]
+            hostname = line.rstrip('\r\n')
+            d["hostname"] = hostname
             line = "__MATCHED__" + line
     
         ## get the ssh configs
@@ -243,7 +247,7 @@ with open(args.xfile, 'r') as myfile:
         ## get logging configs
         elif re.search(logging_config_regex_pattern, line):
             line = line.rstrip('\r\n')
-            d["logging"].append(line)
+            d["management"]["logging"].append(line)
             line = "__MATCHED__" + line
         ## get dot1x configs
         elif re.search(dot1x_config_regex_pattern, line):
@@ -263,7 +267,7 @@ with open(args.xfile, 'r') as myfile:
         ## get aaa configs
         elif re.search(aaa_config_regex_pattern, line):
             line = line.rstrip('\r\n')
-            d["aaa"].append(line)
+            d["auth"]["aaa"].append(line)
             line = "__MATCHED__" + line
         ## get bonjour configs
         elif re.search(bonjour_config_regex_pattern, line):
@@ -297,18 +301,35 @@ with open(args.xfile, 'r') as myfile:
         ## get crypto configs
         elif re.search(crypto_config_regex_pattern, line):
             line = line.rstrip('\r\n')
-            d["crypto"].append(line)
+            d["users"]["chain"].append(line)
             line = "__MATCHED__" + line
     
+        ## get arp configs
+        elif re.search(arp_config_regex_pattern, line):
+            line = line.rstrip('\r\n')
+            d["network"].append(line)
+            line = "__MATCHED__" + line
         ## get snmp configs
         elif re.search(snmp_config_regex_pattern, line):
             line = line.rstrip('\r\n')
-            d["snmp"].append(line)
+            d["management"]["snmp"].append(line)
             line = "__MATCHED__" + line
         ## get webserver configs
         elif re.search(web_server_config_regex_pattern, line):
             line = line.rstrip('\r\n')
             d["remote_access"]["web_server"].append(line)
+            line = "__MATCHED__" + line
+    
+        ## get eee configs
+        elif re.search(eee_config_regex_pattern, line):
+            line = line.rstrip('\r\n')
+            d["hardware"]["power"].append(line)
+            line = "__MATCHED__" + line
+    
+        ## get green eth configs
+        elif re.search(green_ethernet_config_regex_pattern, line):
+            line = line.rstrip('\r\n')
+            d["hardware"]["power"].append(line)
             line = "__MATCHED__" + line
     
         ## get voice vlan configs
@@ -332,7 +353,8 @@ with open(args.xfile, 'r') as myfile:
         elif re.search(username_regex_pattern, line):
             line = line.rstrip('\r\n')
             name = re.split('\s+', line)
-            d["users"][name[1]] = line.rstrip('\r\n')
+            d["users"][name[1]] = {}
+            d["users"][name[1]]["local-account"] = line.rstrip('\r\n')
             line = "__MATCHED__" + line
         else:
             matched = re.search(r"^__MATCHED__*", line)

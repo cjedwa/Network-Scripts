@@ -1,0 +1,259 @@
+{
+    "auth": {
+        "aaa": [
+            "aaa authentication login SSH radius local", 
+            "aaa authentication enable SSH radius", 
+            "aaa authentication login CONSOLE radius local", 
+            "aaa authentication enable CONSOLE radius enable"
+        ], 
+        "radius": [
+            "encrypted radius-server key gnsh2nBMo9g2CHFyZHTMHja1oTYkXEfw0T7BZG8FOA0=", 
+            "encrypted radius-server host 10.255.255.19 key gnsh2nBMo9g2CHFyZHTMHja1oTYkXEfw0T7BZG8FOA0="
+        ]
+    }, 
+    "banner": [
+        "banner login ^C", 
+        "         WARNING NOTICE TO USERS: SNL Systems Are Monitored", 
+        " This Sandia National Laboratories (SNL) information system is monitored.", 
+        " It is the property of the U.S. Government and is for authorized uses only.", 
+        " --------------- Be aware you have no privacy on these systems. --------------", 
+        "    Unauthorized or improper use of this SNL system may result in", 
+        "    disciplinary, administrative, civil, and/or criminal penalties.", 
+        "    LOGIN to acknowledge and agree with these terms and conditions or", 
+        "   DISCONTINUE all efforts to access or use this SNL information system.", 
+        "^C"
+    ], 
+    "bonjour": [
+        "bonjour interface range vlan 1"
+    ], 
+    "hardware": {
+        "disk": [
+            "file SSD indicator encrypted", 
+            "ssd-control-start", 
+            "ssd config", 
+            "ssd file passphrase control unrestricted", 
+            "no ssd file integrity control", 
+            "ssd-control-end cb0a3fdb1f3a1af4e4430033719968c0"
+        ]
+    }, 
+    "hostname": "hostname IDIST-SW-729-IDR", 
+    "interfaces": {
+        "gigabitethernet1": [
+            [
+                "interface gigabitethernet1", 
+                " description \"To ACC-SW-729-143 Gi28 (Hunt Lab), Box 44270\"", 
+                " switchport mode general", 
+                " switchport general allowed vlan add 54,99-102,106,300,310,320,350,360 tagged", 
+                " switchport general allowed vlan add 370,3000 tagged", 
+                " switchport general allowed vlan add 200 untagged", 
+                " switchport general pvid 200"
+            ]
+        ], 
+        "gigabitethernet2": [
+            [
+                "interface gigabitethernet2", 
+                " switchport mode general", 
+                " switchport general allowed vlan add 54,99-102,106,300,310,320,350,360 tagged", 
+                " switchport general allowed vlan add 370,3000 tagged", 
+                " switchport general allowed vlan add 200 untagged", 
+                " switchport general pvid 200"
+            ]
+        ], 
+        "gigabitethernet27": [
+            [
+                "interface gigabitethernet27", 
+                " switchport mode access", 
+                " switchport access vlan 101"
+            ]
+        ], 
+        "gigabitethernet28": [
+            [
+                "interface gigabitethernet28", 
+                " description \"To CORE-SW-821-MDR ge-0/0/12\"", 
+                " switchport mode general", 
+                " switchport general allowed vlan add 54,99-102,300,310,320,350,360,370 tagged", 
+                " switchport general allowed vlan add 3000 tagged", 
+                " switchport general allowed vlan add 200 untagged", 
+                " switchport general pvid 200"
+            ]
+        ], 
+        "gigabitethernet3": [
+            [
+                "interface gigabitethernet3", 
+                " description \"To ACC-SW-729-109 Gi28, Box 44309 7,8\"", 
+                " switchport mode general", 
+                " switchport general allowed vlan add 54,99-102,106,300,310,320,350,360 tagged", 
+                " switchport general allowed vlan add 370,3000 tagged", 
+                " switchport general allowed vlan add 200 untagged", 
+                " switchport general pvid 200"
+            ]
+        ], 
+        "gigabitethernet4": [
+            [
+                "interface gigabitethernet4", 
+                " description \"To ACC-SW-729-IDR Gi1/0/1 (Offices Switch)\"", 
+                " switchport mode general", 
+                " switchport general allowed vlan add 54,99-102,106,300,310,320,350,360 tagged", 
+                " switchport general allowed vlan add 370,3000 tagged", 
+                " switchport general allowed vlan add 200 untagged", 
+                " switchport general ingress-filtering disable", 
+                " switchport general pvid 200"
+            ]
+        ], 
+        "gigabitethernet5": [
+            [
+                "interface gigabitethernet5", 
+                " description \"To ACC-SW-729-147 Gi10 (Server Rm), Box 44286 15,16\"", 
+                " switchport mode general", 
+                " switchport general allowed vlan add 54,99-102,106,300,310,320,350,360 tagged", 
+                " switchport general allowed vlan add 370,3000 tagged", 
+                " switchport general allowed vlan add 200 untagged", 
+                " switchport general pvid 200"
+            ]
+        ], 
+        "gigabitethernet6": [
+            [
+                "interface gigabitethernet6", 
+                " description \"To ACC-SW-729-141 Gi10 (Emu Lab)\"", 
+                " switchport mode general", 
+                " switchport general allowed vlan add 54,99-102,106,300,310,320,350,360 tagged", 
+                " switchport general allowed vlan add 370,3000 tagged", 
+                " switchport general allowed vlan add 200 untagged", 
+                " switchport general pvid 200"
+            ]
+        ], 
+        "gigabitethernet7": [
+            [
+                "interface gigabitethernet7", 
+                " description \"To ACC-SW-729-206 Gi10\"", 
+                " switchport mode general", 
+                " switchport general allowed vlan add 54-55,100-102,300,310,320,350,360 tagged", 
+                " switchport general allowed vlan add 370,3000 tagged", 
+                " switchport general allowed vlan add 200 untagged", 
+                " switchport general pvid 200"
+            ]
+        ], 
+        "vlan": [
+            [
+                "interface vlan 200", 
+                " ip address 192.168.200.32 255.255.255.0"
+            ]
+        ]
+    }, 
+    "line": {
+        "ssh": [
+            "line ssh", 
+            "login authentication SSH", 
+            "enable authentication SSH", 
+            "password ddb077b46b990f4da0ddfdaf7f4e5189c2eea0ac encrypted"
+        ]
+    }, 
+    "management": {
+        "logging": [
+            "logging host 10.255.255.21 severity notifications", 
+            "logging source-interface vlan 200"
+        ], 
+        "snmp": [
+            "snmp-server server", 
+            "snmp-server community x-net-snmp ro view Default", 
+            "snmp-server host 10.255.255.18 traps version 2c x-net-snmp"
+        ]
+    }, 
+    "network": [
+        "ip default-gateway 192.168.200.1"
+    ], 
+    "no_match": [
+        "IDIST-SW-729-IDR", 
+        "line console", 
+        "login authentication CONSOLE", 
+        "enable authentication CONSOLE", 
+        "password ddb077b46b990f4da0ddfdaf7f4e5189c2eea0ac encrypted"
+    ], 
+    "remote_access": {
+        "ssh": {
+            "ssh_client": [
+                "ip ssh-client source-interface vlan 200", 
+                "ip ssh-client authentication public-key rsa"
+            ], 
+            "ssh_server": [
+                "ip ssh server", 
+                "ip ssh password-auth", 
+                "ip ssh pubkey-auth auto-login"
+            ]
+        }, 
+        "web_server": [
+            "ip http authentication aaa login-authentication radius"
+        ]
+    }, 
+    "sshkeys": {
+        "cjedwa": [
+            [
+                "user-key cjedwa rsa", 
+                "key-string row AAAAB3NzaC1yc2EAAAADAQABAAABAQDDT737xsUC", 
+                "key-string row APAONPuaflBRhHgq8uAShW7Ps79Ah9Gdqlzf14Qt", 
+                "key-string row uoqexNzfEgEn2lUoyjTMd6yof+/Zo1w8/s69hKRT", 
+                "key-string row S6UVXgo0Ttm0CppoaozuI1rejdTS1hu4", 
+                "key-string row bIUJZFwu4gtSmTG8AifBjToLHmsuJuWWYtmnTQy7", 
+                "key-string row tUCWeYDdjQnwyjnQxbepA6akx1S1oVYOUY2qtf/M", 
+                "key-string row edr6C6YMRhlYESm79iE3COIpONE6EkggdCRD3gr5", 
+                "key-string row L4AZC9HLLvoDrSzrZ6efaoSNCEUuR/p6862WTnF0", 
+                "key-string row O7kP7wbE82ScbMbUScaV4V83QGDOb+2tkJM/fCYs", 
+                "key-string row cCKmhLmQJ196Jcgz+CHd"
+            ]
+        ], 
+        "management": [
+            [
+                "user-key management rsa", 
+                "key-string row AAAAB3NzaC1yc2EAAAADAQABAAABAQC1bilFVcJs", 
+                "key-string row 4v/2U8cS+bjMTPgpMqyAFxRnU7cdveJ8adqIso/2", 
+                "key-string row 8/UiCoVAee5Syucz/zgx7NyQhx2BlEYFE2N4Wq27", 
+                "key-string row 8fDpCsGem2kOcCYSXxpQaFok7ymonWcg", 
+                "key-string row mt88YJMvj4Za2Wr1LmGW4TtJf728DnvFIn4wTtTB", 
+                "key-string row L5fXk6VEZS7MW/4sdFSlfw6Svi2jqEe9Ze32aJKc", 
+                "key-string row JR4FyXlI61LuHWicrZzHRqzo51NXU7Ln/UGSciuk", 
+                "key-string row 2TvxwPycHA8YGSENK7LSczw5fhqpFR/nSNg3TQyP", 
+                "key-string row dJPnYi42CbvdRR7KBteVgqzaKjHMVCTigkpPHzBQ", 
+                "key-string row 9wrmz82ZSSDnh2Bvq5fB"
+            ]
+        ]
+    }, 
+    "system_mode": "set system mode router ", 
+    "time": {
+        "clock": [
+            "clock timezone MST -7", 
+            "clock source sntp"
+        ], 
+        "sntp": [
+            "encrypted sntp authentication-key 1 md5 oLddPwq9EsO4ZlBz/06L1O5/3ivTew9imyYUl7rD8zU=", 
+            "sntp trusted-key 1", 
+            "sntp authenticate", 
+            "sntp unicast client enable", 
+            "sntp unicast client poll", 
+            "sntp server 10.255.255.2 poll key 1", 
+            "sntp source-interface vlan 200"
+        ]
+    }, 
+    "users": {
+        "chain": [
+            "crypto key pubkey-chain ssh"
+        ], 
+        "cjedwa": {
+            "local-account": "username cjedwa password encrypted c523373354288025f4d40545b6458c22795b03a5 privilege 15"
+        }, 
+        "management": {
+            "local-account": "username management password encrypted 6381bdee8e82fe91ae2e154542bfb9b810de5fbb privilege 15"
+        }
+    }, 
+    "vlans": {
+        "voice": [
+            "voice vlan oui-table add 0001e3 Siemens_AG_phone________", 
+            "voice vlan oui-table add 00036b Cisco_phone_____________", 
+            "voice vlan oui-table add 00096e Avaya___________________", 
+            "voice vlan oui-table add 000fe2 H3C_Aolynk______________", 
+            "voice vlan oui-table add 0060b9 Philips_and_NEC_AG_phone", 
+            "voice vlan oui-table add 00d01e Pingtel_phone___________", 
+            "voice vlan oui-table add 00e075 Polycom/Veritel_phone___", 
+            "voice vlan oui-table add 00e0bb 3Com_phone______________"
+        ]
+    }
+}
